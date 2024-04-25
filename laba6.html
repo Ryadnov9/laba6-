@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шифрування та дешифрування за схемою заміни </title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-container input {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #encrypted-text {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Шифрування та дешифрування за схемою заміни</h1>
+
+    <div class="input-container">
+        <label for="encrypt-input">Введіть текст для шифрування:</label>
+        <input type="text" id="encrypt-input">
+        <label for="encryption-key">Введіть ключ-алфавіт:</label>
+        <input type="text" id="encryption-key">
+        <button onclick="encryptText()">Зашифрувати</button>
+    </div>
+
+    <div class="input-container">
+        <label for="decrypt-input">Введіть зашифрований текст для дешифрування:</label>
+        <input type="text" id="decrypt-input">
+        <label for="decryption-key">Введіть ключ-алфавіт:</label>
+        <input type="text" id="decryption-key">
+        <button onclick="decryptText()">Дешифрувати</button>
+    </div>
+
+    <p id="encrypted-text"></p>
+
+    <script>
+        function getAlphabetIndex(char) {
+            const alphabet = "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя0123456789";
+            return alphabet.indexOf(char.toLowerCase());
+        }
+
+        function getAlphabetChar(index) {
+            const alphabet = "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя0123456789";
+            return alphabet[index];
+        }
+
+        // Функція шифрування
+        function encryptText() {
+            const inputText = document.getElementById("encrypt-input").value.toLowerCase().replace(/\s/g, ''); // Видаляємо пробіли з тексту
+            const encryptionKey = document.getElementById("encryption-key").value.toLowerCase();
+            let encryptedText = "";
+
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                const keyChar = encryptionKey[i % encryptionKey.length];
+                const newIndex = (getAlphabetIndex(char) + getAlphabetIndex(keyChar)) % 40;
+                encryptedText += getAlphabetChar(newIndex);
+            }
+
+            document.getElementById("encrypted-text").textContent = encryptedText;
+        }
+
+        // Функція дешифрування
+        function decryptText() {
+            const inputText = document.getElementById("decrypt-input").value.toLowerCase();
+            const decryptionKey = document.getElementById("decryption-key").value.toLowerCase();
+            let decryptedText = "";
+
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                const keyChar = decryptionKey[i % decryptionKey.length];
+                let newIndex = (getAlphabetIndex(char) - getAlphabetIndex(keyChar) + 40) % 40;
+                decryptedText += getAlphabetChar(newIndex);
+            }
+
+            document.getElementById("encrypted-text").textContent = decryptedText;
+        }
+    </script>
+</body>
+</html>
